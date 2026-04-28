@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Joguinho Aleatório </title>
+<link rel="stylesheet" type="text/css" href="index.css">
+</head>    
+<body>
+    <h1> Joguinho Aleatório" </h1>
+    <p>Regras: Você tem um "número esperado" e deve clicar em "clique aqui" até o resultado ser igual ao número esperado. </p>
+    <p>Número Esperado: <span id="numeroEsperado"></span></p>
+    <a href="#" id="incrementador">Clique aqui</a>
+    <div id = "resultado"></div>
+
+    <script>
+        let numeroEsperado = Math.floor(Math.random() * 20) +1;
+        let ganhou = false
+
+        document.getElementById("numeroEsperado").textContent = numeroEsperado
+        document.getElementById("incrementador").addEventListener("click", function(event){
+            event.preventDefault();
+
+            if (ganhou){
+                let mensagemJaGanhou = document.createElement("p")
+                mensagemJaGanhou.textContent = "Você já ganhou, pare de clicar!";
+                document.getElementById("resultado").appendChild(mensagemJaGanhou)
+                return;
+            }
+            let numeroAleatorio = Math.floor(Math.random() * 20) +1;
+            let novoParagrafo = document.createElement("p");
+            novoParagrafo.textContent = numeroAleatorio
+            document.getElementById("resultado").appendChild(novoParagrafo);
+
+            if (numeroAleatorio === numeroEsperado){
+                novoParagrafo.textContent += " - Você ganhou!!!"
+                ganhou = true;
+            }
+        })
+    </script>
+</body>
+</html>
