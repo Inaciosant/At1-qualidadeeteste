@@ -2,19 +2,23 @@ import os
 import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 def testar_joguinho():
     driver = webdriver.Chrome()
+    tempo_inicio_total = time.time()
 
     try:
         caminho_arquivo = "file://" + os.path.abspath("Jogo_desafio.html")
         driver.get(caminho_arquivo)
+        wait = WebDriverWait(driver, 2)
 
         elemento_esperado = driver.find_element(By.ID, "numeroEsperado")
         botao_clique = driver.find_element(By.ID, "incrementador")
         div_resultado = driver.find_element(By.ID, "resultado")
 
+        wait.until(lambda d: elemento_esperado.text.strip() != "")
         numero_esperado_texto = elemento_esperado.text
 
         assert numero_esperado_texto != "", \
@@ -55,6 +59,10 @@ def testar_joguinho():
             botao_clique.click()
             tentativas += 1
 
+            wait.until(
+                lambda d: len(d.find_elements(By.CSS_SELECTOR, "#resultado p"))
+                == quantidade_antes + 1
+            )
             paragrafos = div_resultado.find_elements(By.TAG_NAME, "p")
             quantidade_depois = len(paragrafos)
 
@@ -104,6 +112,11 @@ def testar_joguinho():
 
         botao_clique.click()
 
+        wait.until(
+            lambda d: len(d.find_elements(By.CSS_SELECTOR, "#resultado p"))
+            == quantidade_antes_pos_vitoria + 1
+        )
+
         paragrafos_pos_vitoria = div_resultado.find_elements(By.TAG_NAME, "p")
         quantidade_depois_pos_vitoria = len(paragrafos_pos_vitoria)
 
@@ -118,7 +131,14 @@ def testar_joguinho():
         print("Cenário 9: clique após a vitória mostra a mensagem correta")
         print(f"Texto pós-vitória: {ultimo_paragrafo_pos}")
 
-        print("\nSUCESSO: Todos os cenários foram testados e validados!")
+        tempo_total_segundos = time.time() - tempo_inicio_total
+        print("\n" + "=" * 50)
+        print("RELATORIO FINAL DE METRICAS")
+        print("=" * 50)
+        print(f"Tempo total de execucao: {tempo_total_segundos:.2f} segundos")
+        print(f"Total de cliques ate vencer: {tentativas} cliques")
+        print("=" * 50)
+        print("\nSUCESSO: Todos os cenarios foram testados e validados!")
 
     finally:
         time.sleep(2)
